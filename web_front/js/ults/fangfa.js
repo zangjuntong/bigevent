@@ -86,11 +86,15 @@ var fangFa = {
     //获取文章5个焦点图
     fivefocus: function(callback) {
         $.get(suerUrl.articalSerch, {
-            page: 5,
+            perpage: 5,
             state: '已发布'
         }, function(res) {
             callback(res)
         })
     },
-
+    // articalsmalls: function(id, callback) {
+    //     $.get(suerUrl.articalSerch, { 'id': id }, function(res) {
+    //         callback(res);
+    //     })
+    // }
 };
