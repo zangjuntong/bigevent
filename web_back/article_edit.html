@@ -11,10 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <link type="text/css" rel="stylesheet" href="js/jedate/css/jedate.css">
-    <script src="js/jquery-1.12.4.min.js"></script>
-    <script src="js/jedate/js/jedate.js"></script>
-    <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
-    <script src="js/tinymce/js/tinymce_setup.js"></script>
+
 </head>
 
 <body>
@@ -23,29 +20,25 @@
             文章编辑
         </div>
         <div class="container-fluid common_con">
-            <form class="form-horizontal article_form">
+            <form class="form-horizontal article_form" id="myform">
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="email" class="form-control" name="title" id="articaltitle" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <img src="images/pic06.jpg" class="article_cover" id="articalcoverimg">
+                        <input type="file" id="articalcover" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
-                            <option>类别二</option>
-                            <option>类别三</option>
-                            <option selected>类别四</option>
-                            <option>类别五</option>
+                        <select class="form-control" id="articaltype" name="type">
+                           
                         </select>
                     </div>
                 </div>
@@ -54,7 +47,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control" name="date" value="2019-05-17" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -71,13 +64,64 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="button" id="btugai" class="btn btn-success">修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/jedate/js/jedate.js"></script>
+    <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="js/tinymce/js/tinymce_setup.js"></script>
+    <script src="./js/usertjs/baseurl.js"></script>
+    <script src="./js/usertjs/fangfa.js"></script>
+    <script src="./js/template-web.js"></script>
+    <script id="leiBei" type="text/html">
+        {{each data item}}
 
+        <option value="{{item.id}}">{{item.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        var id = location.search.substr(4);
+
+        //根据id获取文章详情
+        fangFa.articxiang(id, function(res) {
+            var typeid = res.data.type;
+            console.log(res);
+            $('#articaltitle').val(res.data.title);
+            $('#articalcoverimg').prop('src', res.data.cover);
+            $('#dateinput').val(res.data.date);
+            $('#rich_content').val(res.data.content);
+            //分类列表
+            fangFa.userLeiSerch(function(res) {
+                console.log(res);
+                var htmlstrs = template('leiBei', res);
+                $('#articaltype').html(htmlstrs);
+                $('#articaltype').val(typeid)
+            });
+        });
+
+        //用户修改
+        $('#btugai').click(function() {
+            console.log(11);
+
+            var fd = new FormData(document.getElementById('myform'));
+            fd.append("id", id);
+            fd.set('content', tinyMCE.activeEditor.getContent());
+            fangFa.articedit(function(res) {
+                if (res.code === 200) {
+                    alert('修改成功')
+                } else {
+                    alert(res.msg)
+                }
+            })
+
+
+
+        })
+    </script>
 </body>
 
 </html>

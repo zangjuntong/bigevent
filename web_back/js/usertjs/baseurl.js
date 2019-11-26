@@ -14,5 +14,16 @@ var suerUrl = {
     //新增文章类别
     userAdd: http + '/admin/category_add',
     //删除文章类别
-    userDel: http + '/admin/category_delete'
+    userDel: http + '/admin/category_delete',
+    //文章搜索
+    articalSerch: http + '/admin/search',
+    //文章删除
+    articdel: http + '/admin/article_delete',
+    //新增文章
+    articadd: http + '/admin/article_publish',
+    //编辑文章
+    articaledit: http + '/admin/category_edit'
 };
+
+//const href = 'http://172.16.0.119:8080/job/MDM_RESTful_api_autotest(oracle)/14/'; //这个改不了
+//var href = 'http://172.16.0.119:8080/job/MDM_RESTful_api_autotest(oracle)/14/'; //这个可以改
