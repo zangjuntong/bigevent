@@ -25,6 +25,10 @@ var suerUrl = {
     articaledit: http + '/admin/category_edit',
     //获取文章详细内容
     // articalsmall: http + '/artitle'
+    //获取评论列表
+    get_comments: http + '/get_comments',
+    //发表评论
+    post_comments: http + '/post_comment'
 };
 
 //const href = 'http://172.16.0.119:8080/job/MDM_RESTful_api_autotest(oracle)/14/'; //这个改不了

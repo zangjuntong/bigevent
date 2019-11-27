@@ -92,9 +92,20 @@ var fangFa = {
             callback(res)
         })
     },
-    // articalsmalls: function(id, callback) {
-    //     $.get(suerUrl.articalSerch, { 'id': id }, function(res) {
-    //         callback(res);
-    //     })
-    // }
+    //获取评论列表
+    get_comment: function(id, callback) {
+        $.get(suerUrl.get_comments, { article_id: id }, function(res) {
+            callback(res)
+        })
+    },
+    //发表评论
+    post_comment: function(name, content, id, callback) {
+        $.post(suerUrl.post_comments, {
+            'name': name,
+            'content': content,
+            'article_id': id
+        }, function(res) {
+            callback(res)
+        })
+    }
 };

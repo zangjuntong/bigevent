@@ -81,21 +81,21 @@
             <form action="" class="comment_form">
                 <div class="form_group">
                     <label>用户名：</label>
-                    <input type="text" placeholder="请输入用户名" class="comment_name">
+                    <input type="text" placeholder="请输入用户名" id="comment_name" class="comment_name">
                 </div>
                 <div class="form_group">
                     <label>评论内容：</label>
-                    <textarea placeholder="请发表您的评论" class="comment_input"></textarea>
+                    <textarea placeholder="请发表您的评论" id="comment_content" class="comment_input"></textarea>
                 </div>
                 <div class="form_group">
-                    <input type="submit" name="" value="评 论" class="comment_sub"></div>
+                    <input type="button" id="comment_subs" name="" value="评 论" class="comment_sub"></div>
             </form>
 
             <div class="comment_count">
                 4条评论
             </div>
 
-            <div class="comment_list_con">
+            <div class="comment_list_con" id="comment_list">
                 <!-- <div class="comment_detail_list">
                     <div class="person_pic fl">乔</div>
                     <div class="name_time fl"><b>虚竹</b><span>4小时前</span></div>
@@ -187,7 +187,20 @@
     <script src="./js/ults/baseurl.js"></script>
     <script src="./js/ults/fangfa.js"></script>
     <script src="./js/template-web.js"></script>
-
+    <script src="./js/dayjs.min.js"></script>
+    <script src="./js/relative.min.js"></script>
+    <script src="./js/zh_cn.js"></script>
+    <script id="temp_comment" type="text/html">
+        {{each data item}}
+        <div class="comment_detail_list">
+            <div class="person_pic fl">{{item.name.substr(0,1)}}</div>
+            <div class="name_time fl"><b>{{item.name}}</b><span>{{item.relativeDt}}</span></div>
+            <div class="comment_text fl">
+                {{item.content}}
+            </div>
+        </div>
+        {{/each}}
+    </script>
 
     <script>
         var id = location.search.substr(4);
@@ -205,7 +218,7 @@
             fangFa.userLeiSerch(function(result) {
                 console.log(result);
                 var rs = result.data.find(function(item) {
-                    console.log(item);
+                    // console.log(item);
 
                     if (item.id == typeId) {
                         return true;
@@ -218,6 +231,37 @@
 
                 // }
             })
+        });
+        //添加评论
+        $('#comment_subs').click(function() {
+            var name = $('#comment_name').val().trim();
+            var content = $('#comment_content').val().trim();
+            console.log(name, content, id);
+
+            fangFa.post_comment(name, content, id, function(res) {
+                console.log(res);
+                $('#comment_content').val('');
+                $('#comment_name').val('')
+
+            })
+        })
+        dayjs.extend(dayjs_plugin_relativeTime)
+
+        // dayjs设置语言
+        dayjs.locale('zh-cn')
+            //获取评论
+        fangFa.get_comment(id, function(res) {
+            console.log(res);
+            res.data.reverse()
+                // 对于所有的评论数据，给每一条数据中额外添加一个相对时间的属性
+                // 然后，在模板引擎中使用这个属性
+            res.data.forEach(function(item) {
+                item.relativeDt = dayjs(item.dt).toNow()
+            })
+            console.log(res.data)
+                // 用模板引擎 渲染数据
+            var htmlStr = template('temp_comment', res);
+            $('#comment_list').html(htmlStr)
         })
     </script>
 
